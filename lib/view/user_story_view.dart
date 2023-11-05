@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:instagram_stories_demo/model/Story.dart';
+import 'package:instagram_stories_demo/provider/story_video_provider.dart';
 import 'package:instagram_stories_demo/widget/story_image.dart';
+import 'package:instagram_stories_demo/widget/video_player.dart';
 import 'package:provider/provider.dart';
 
 import '../provider/cube_page_controller_provider.dart';
@@ -37,7 +39,9 @@ class _UserStoryViewState extends State<UserStoryView> {
     return Container(
       color: Colors.black,
       child: GestureDetector(
-        onTapDown: _handleTapDown,
+        onLongPress: _handleLongPressStart,
+        onLongPressEnd: _handleLongPressEnd,
+        onTapUp: _handleTapUp,
         child: Stack(
           children: [
             _buildPageView(),
@@ -58,12 +62,19 @@ class _UserStoryViewState extends State<UserStoryView> {
   }
 
   Widget _buildStoryPage(BuildContext context, int index) {
+    String? storyUrl = widget.user.stories?[index];
+
+    Widget storyWidget;
+    if (storyUrl != null && storyUrl.endsWith('.mp4')) {
+      storyWidget = StoryVideo(videoURL: storyUrl);
+    } else {
+      storyWidget = StoryImage(imageUrl: storyUrl);
+    }
+
     return Stack(
       children: [
         Center(
-          child: StoryImage(
-            imageUrl: widget.user.stories?[index],
-          ),
+          child: storyWidget,
         ),
         Center(
           child: Text(
@@ -82,7 +93,7 @@ class _UserStoryViewState extends State<UserStoryView> {
     );
   }
 
-  void _handleTapDown(TapDownDetails details) {
+  void _handleTapUp(TapUpDetails details) {
     final screenWidth = MediaQuery.of(context).size.width;
     if (details.localPosition.dx > screenWidth / 2) {
       _onTapRight();
@@ -159,5 +170,13 @@ class _UserStoryViewState extends State<UserStoryView> {
   void _disposeController() {
     _innerPageController.removeListener(_updateStoryIndex);
     _innerPageController.dispose();
+  }
+
+  void _handleLongPressStart() {
+    Provider.of<StoryVideoProvider>(context, listen: false).pause();
+  }
+
+  void _handleLongPressEnd(LongPressEndDetails details) {
+    Provider.of<StoryVideoProvider>(context, listen: false).resume();
   }
 }

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:instagram_stories_demo/cubit/home_page_cubit.dart';
 import 'package:instagram_stories_demo/provider/cube_page_controller_provider.dart';
+import 'package:instagram_stories_demo/provider/story_video_provider.dart';
 import 'package:instagram_stories_demo/view/home_page.dart';
 import 'package:provider/provider.dart';
 
@@ -17,6 +18,7 @@ Future<void> main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => CubePageControllerProvider()),
+        ChangeNotifierProvider(create: (_) => StoryVideoProvider()),
         BlocProvider(create: (_) => HomePageCubit()),
       ],
       child: MyApp(),
