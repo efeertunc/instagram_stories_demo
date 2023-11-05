@@ -1,0 +1,163 @@
+import 'package:flutter/material.dart';
+import 'package:instagram_stories_demo/model/Story.dart';
+import 'package:instagram_stories_demo/widget/story_image.dart';
+import 'package:provider/provider.dart';
+
+import '../provider/cube_page_controller_provider.dart';
+
+class UserStoryView extends StatefulWidget {
+  final Story user;
+
+  UserStoryView({
+    required this.user,
+  });
+
+  @override
+  _UserStoryViewState createState() => _UserStoryViewState();
+}
+
+class _UserStoryViewState extends State<UserStoryView> {
+  late final PageController _innerPageController;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeController();
+    _configureStoryListener();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: _buildContainer(),
+    );
+  }
+
+  Widget _buildContainer() {
+    return Container(
+      color: Colors.black,
+      child: GestureDetector(
+        onTapDown: _handleTapDown,
+        child: Stack(
+          children: [
+            _buildPageView(),
+            _buildUserNameText(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  PageView _buildPageView() {
+    return PageView.builder(
+      controller: _innerPageController,
+      physics: NeverScrollableScrollPhysics(),
+      itemCount: widget.user.stories?.length,
+      itemBuilder: _buildStoryPage,
+    );
+  }
+
+  Widget _buildStoryPage(BuildContext context, int index) {
+    return Stack(
+      children: [
+        Center(
+          child: StoryImage(
+            imageUrl: widget.user.stories?[index],
+          ),
+        ),
+        Center(
+          child: Text(
+            'index $index',
+            style: TextStyle(color: Colors.white, fontSize: 50),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Text _buildUserNameText() {
+    return Text(
+      widget.user.username ?? '',
+      style: TextStyle(color: Colors.white, fontSize: 50),
+    );
+  }
+
+  void _handleTapDown(TapDownDetails details) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    if (details.localPosition.dx > screenWidth / 2) {
+      _onTapRight();
+    } else {
+      _onTapLeft();
+    }
+  }
+
+  void _onTapRight() {
+    if (_innerPageController.page == (widget.user.stories?.length ?? 1) - 1) {
+      _moveToNextUser();
+    } else {
+      _moveToNextImage();
+    }
+  }
+
+  void _onTapLeft() {
+    if (_innerPageController.page == 0) {
+      _moveToPreviousUser();
+    } else {
+      _moveToPreviousImage();
+    }
+  }
+
+  void _initializeController() {
+    _innerPageController = PageController();
+  }
+
+  void _configureStoryListener() {
+    _innerPageController.addListener(_updateStoryIndex);
+    final currentIndex = _getCurrentUserStoryIndex();
+    Future.delayed(Duration.zero, () {
+      _innerPageController.jumpToPage(currentIndex);
+    });
+  }
+
+  void _moveToNextUser() {
+    Provider.of<CubePageControllerProvider>(context, listen: false).nextPage();
+  }
+
+  void _moveToPreviousUser() {
+    Provider.of<CubePageControllerProvider>(context, listen: false)
+        .previousPage();
+  }
+
+  void _moveToNextImage() {
+    _innerPageController.nextPage(
+        duration: Duration(milliseconds: 10), curve: Curves.ease);
+  }
+
+  void _moveToPreviousImage() {
+    _innerPageController.previousPage(
+        duration: Duration(milliseconds: 10), curve: Curves.ease);
+  }
+
+  void _updateStoryIndex() {
+    Provider.of<CubePageControllerProvider>(context, listen: false)
+            .userStoryIndices?[widget.user.username ?? ''] =
+        _innerPageController.page!.toInt();
+  }
+
+  int _getCurrentUserStoryIndex() {
+    return Provider.of<CubePageControllerProvider>(context, listen: false)
+            .userStoryIndices?[widget.user.username] ??
+        0;
+  }
+
+  @override
+  void dispose() {
+    _disposeController();
+    super.dispose();
+  }
+
+  void _disposeController() {
+    _innerPageController.removeListener(_updateStoryIndex);
+    _innerPageController.dispose();
+  }
+}

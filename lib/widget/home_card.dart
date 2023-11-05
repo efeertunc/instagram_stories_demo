@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:instagram_stories_demo/model/Story.dart';
-import 'package:instagram_stories_demo/widget/cube_page_view.dart';
+import 'package:instagram_stories_demo/view/cube_page_view.dart';
 
 class HomeCard extends StatelessWidget {
   final List<Story> homeCardModelList;
