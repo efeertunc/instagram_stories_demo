@@ -4,9 +4,9 @@ import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 
 class StoryVideo extends StatefulWidget {
-  String videoURL;
+  final String videoURL;
 
-  StoryVideo({required this.videoURL, super.key});
+  const StoryVideo({required this.videoURL, Key? key}) : super(key: key);
 
   @override
   _StoryVideoState createState() => _StoryVideoState();
@@ -27,14 +27,22 @@ class _StoryVideoState extends State<StoryVideo> {
   Widget build(BuildContext context) {
     return Consumer<StoryVideoProvider>(
       builder: (context, storyProvider, child) {
-        return Center(
-          child: storyProvider.controller.value.isInitialized
-              ? AspectRatio(
-                  aspectRatio: storyProvider.controller.value.aspectRatio,
-                  child: VideoPlayer(storyProvider.controller),
-                )
-              : Container(), // You can also show a loader here
-        );
+        if (storyProvider.controller.value.hasError) {
+          return Center(
+            child: Text(
+                'Bir hata oluştu: ${storyProvider.controller.value.errorDescription}'),
+          );
+        }
+
+        if (storyProvider.controller.value.isInitialized) {
+          return Center(
+            child: AspectRatio(
+              aspectRatio: storyProvider.controller.value.aspectRatio,
+              child: VideoPlayer(storyProvider.controller),
+            ),
+          );
+        }
+        return const CircularProgressIndicator();
       },
     );
   }
