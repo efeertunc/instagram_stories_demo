@@ -10,7 +10,8 @@ import '../provider/cube_page_controller_provider.dart';
 class UserStoryView extends StatefulWidget {
   final Story user;
 
-  UserStoryView({
+  const UserStoryView({
+    super.key,
     required this.user,
   });
 
@@ -55,7 +56,7 @@ class _UserStoryViewState extends State<UserStoryView> {
   PageView _buildPageView() {
     return PageView.builder(
       controller: _innerPageController,
-      physics: NeverScrollableScrollPhysics(),
+      physics: const NeverScrollableScrollPhysics(),
       itemCount: widget.user.stories?.length,
       itemBuilder: _buildStoryPage,
     );
@@ -79,7 +80,7 @@ class _UserStoryViewState extends State<UserStoryView> {
         Center(
           child: Text(
             'index $index',
-            style: TextStyle(color: Colors.white, fontSize: 50),
+            style: const TextStyle(color: Colors.white, fontSize: 50),
           ),
         ),
       ],
@@ -89,7 +90,7 @@ class _UserStoryViewState extends State<UserStoryView> {
   Text _buildUserNameText() {
     return Text(
       widget.user.username ?? '',
-      style: TextStyle(color: Colors.white, fontSize: 50),
+      style: const TextStyle(color: Colors.white, fontSize: 50),
     );
   }
 
@@ -141,12 +142,12 @@ class _UserStoryViewState extends State<UserStoryView> {
 
   void _moveToNextImage() {
     _innerPageController.nextPage(
-        duration: Duration(milliseconds: 10), curve: Curves.ease);
+        duration: const Duration(milliseconds: 10), curve: Curves.ease);
   }
 
   void _moveToPreviousImage() {
     _innerPageController.previousPage(
-        duration: Duration(milliseconds: 10), curve: Curves.ease);
+        duration: const Duration(milliseconds: 10), curve: Curves.ease);
   }
 
   void _updateStoryIndex() {
@@ -173,10 +174,20 @@ class _UserStoryViewState extends State<UserStoryView> {
   }
 
   void _handleLongPressStart() {
-    Provider.of<StoryVideoProvider>(context, listen: false).pause();
+    if (_isCurrentStoryVideo()) {
+      Provider.of<StoryVideoProvider>(context, listen: false).pause();
+    }
   }
 
   void _handleLongPressEnd(LongPressEndDetails details) {
-    Provider.of<StoryVideoProvider>(context, listen: false).resume();
+    if (_isCurrentStoryVideo()) {
+      Provider.of<StoryVideoProvider>(context, listen: false).resume();
+    }
+  }
+
+  bool _isCurrentStoryVideo() {
+    int? currentIndex = _innerPageController.page?.toInt();
+    String? storyUrl = widget.user.stories?[currentIndex ?? 0];
+    return storyUrl != null && storyUrl.endsWith('.mp4');
   }
 }
