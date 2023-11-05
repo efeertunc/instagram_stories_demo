@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "162214450817",
+    "project_id": "instagram-stories-3189f",
+    "storage_bucket": "instagram-stories-3189f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:162214450817:android:13d1c580d48d0eb603df80",
+        "android_client_info": {
+          "package_name": "com.efertunc.instagram_stories_demo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCk6dR7gRsddDwhdPzUC6WiYQYvxpTNX_E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

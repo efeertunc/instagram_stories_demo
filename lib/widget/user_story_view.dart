@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:instagram_stories_demo/model/home_card_model.dart';
+import 'package:instagram_stories_demo/model/Story.dart';
 import 'package:provider/provider.dart';
 
 import '../provider/cube_page_controller_provider.dart';
 
 class UserStoryView extends StatefulWidget {
-  final HomeCardModel user;
+  final Story user;
 
   UserStoryView({
     required this.user,
@@ -32,32 +32,6 @@ class _UserStoryViewState extends State<UserStoryView> {
     });
   }
 
-  void _pageChanged() {
-    Provider.of<CubePageControllerProvider>(context, listen: false)
-            .userStoryIndices?[widget.user.username ?? ''] =
-        _innerPageController.page!.toInt();
-  }
-
-  void onTapRight(BuildContext context) {
-    if (_innerPageController.page == (widget.user.storyList?.length ?? 1) - 1) {
-      Provider.of<CubePageControllerProvider>(context, listen: false)
-          .nextPage();
-    } else {
-      _innerPageController.nextPage(
-          duration: Duration(milliseconds: 10), curve: Curves.ease);
-    }
-  }
-
-  void onTapLeft(BuildContext context) {
-    if (_innerPageController.page == 0) {
-      Provider.of<CubePageControllerProvider>(context, listen: false)
-          .previousPage();
-    } else {
-      _innerPageController.previousPage(
-          duration: Duration(milliseconds: 10), curve: Curves.ease);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -77,13 +51,13 @@ class _UserStoryViewState extends State<UserStoryView> {
               PageView.builder(
                   controller: _innerPageController,
                   physics: NeverScrollableScrollPhysics(),
-                  itemCount: widget.user.storyList?.length,
+                  itemCount: widget.user.stories?.length,
                   itemBuilder: (context, indexUserStory) {
                     return Stack(
                       children: [
                         Center(
-                          child: Image.asset(
-                            widget.user.storyList?[indexUserStory] ?? '',
+                          child: Image.network(
+                            widget.user.stories?[indexUserStory] ?? '',
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -105,6 +79,32 @@ class _UserStoryViewState extends State<UserStoryView> {
         ),
       ),
     );
+  }
+
+  void _pageChanged() {
+    Provider.of<CubePageControllerProvider>(context, listen: false)
+            .userStoryIndices?[widget.user.username ?? ''] =
+        _innerPageController.page!.toInt();
+  }
+
+  void onTapRight(BuildContext context) {
+    if (_innerPageController.page == (widget.user.stories?.length ?? 1) - 1) {
+      Provider.of<CubePageControllerProvider>(context, listen: false)
+          .nextPage();
+    } else {
+      _innerPageController.nextPage(
+          duration: Duration(milliseconds: 10), curve: Curves.ease);
+    }
+  }
+
+  void onTapLeft(BuildContext context) {
+    if (_innerPageController.page == 0) {
+      Provider.of<CubePageControllerProvider>(context, listen: false)
+          .previousPage();
+    } else {
+      _innerPageController.previousPage(
+          duration: Duration(milliseconds: 10), curve: Curves.ease);
+    }
   }
 
   @override

@@ -1,4 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-permission android:name="android.permissin.INTERNET"/>
     <application
         android:label="instagram_stories_demo"
         android:name="${applicationName}"

@@ -1,13 +1,25 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:instagram_stories_demo/cubit/home_page_cubit.dart';
 import 'package:instagram_stories_demo/provider/cube_page_controller_provider.dart';
 import 'package:instagram_stories_demo/view/home_page.dart';
 import 'package:provider/provider.dart';
 
-void main() {
+import 'firebase_options.dart';
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(
-    ChangeNotifierProvider(
-      create: (_) => CubePageControllerProvider(),
-      child: MyApp(), // Uygulamanızın ana widget'ı
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => CubePageControllerProvider()),
+        BlocProvider(create: (_) => HomePageCubit()),
+      ],
+      child: MyApp(),
     ),
   );
 }

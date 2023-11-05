@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:instagram_stories_demo/model/home_card_model.dart';
+import 'package:instagram_stories_demo/model/Story.dart';
 import 'package:instagram_stories_demo/widget/cube_page_view.dart';
 
 class HomeCard extends StatelessWidget {
-  final List<HomeCardModel> homeCardModelList;
+  final List<Story> homeCardModelList;
   final int index;
 
   const HomeCard(this.index, this.homeCardModelList, {Key? key})

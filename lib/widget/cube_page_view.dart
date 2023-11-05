@@ -1,12 +1,12 @@
 import 'package:cube_transition_plus/cube_transition_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:instagram_stories_demo/model/home_card_model.dart';
+import 'package:instagram_stories_demo/model/Story.dart';
 import 'package:instagram_stories_demo/provider/cube_page_controller_provider.dart';
 import 'package:instagram_stories_demo/widget/user_story_view.dart';
 import 'package:provider/provider.dart';
 
 class PageViewCube extends StatefulWidget {
-  final List<HomeCardModel> homeCardModelList;
+  final List<Story> homeCardModelList;
   final int? initialPage;
 
   const PageViewCube(this.homeCardModelList, {this.initialPage, Key? key})
@@ -44,7 +44,6 @@ class _PageViewCubeState extends State<PageViewCube> {
                   .controller,
           itemCount: widget.homeCardModelList.length,
           itemBuilder: (context, index, notifier) {
-            print(index);
             var user = widget.homeCardModelList[index];
             return CubeWidget(
               index: index,
