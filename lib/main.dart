@@ -1,7 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:instagram_stories_demo/provider/cube_page_controller_provider.dart';
+import 'package:instagram_stories_demo/view/home_page.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => CubePageControllerProvider(),
+      child: MyApp(), // Uygulamanızın ana widget'ı
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -15,26 +23,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({
-    super.key,
-  });
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(),
-      body: Container(),
+      home: const HomePage(),
     );
   }
 }
