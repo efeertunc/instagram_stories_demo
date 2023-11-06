@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 class StoryTimer {
-  final int storyDuration;
+  int storyDuration;
   final Function() onStoryEnd;
   final Function? onStoryPause;
   final Function? onStoryResume;
@@ -19,11 +19,16 @@ class StoryTimer {
     this.onStoryResume,
   });
 
+  void updateDuration(int newDuration) {
+    storyDuration = newDuration;
+  }
+
   void start() {
     if (timer != null && timer!.isActive) timer!.cancel();
 
     final startTime =
         DateTime.now().subtract(Duration(milliseconds: _elapsedTime));
+
     timer = Timer.periodic(Duration(milliseconds: 10), (timer) {
       final elapsed = DateTime.now().difference(startTime).inMilliseconds;
       final progress = elapsed / storyDuration;
@@ -54,7 +59,17 @@ class StoryTimer {
   }
 
   void reset() {
+    resetWithoutCallback();
+    onStoryEnd();
+  }
+
+  void updateElapsedTime(int newElapsedTime) {
+    _elapsedTime = newElapsedTime;
+  }
+
+  void resetWithoutCallback() {
     _elapsedTime = 0;
+    storyDuration = 5000;
     timer?.cancel();
   }
 }

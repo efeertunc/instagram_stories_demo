@@ -6,9 +6,14 @@ import 'package:video_player/video_player.dart';
 class StoryVideo extends StatefulWidget {
   final String videoURL;
   final VoidCallback? onLoaded;
+  final Function(int duration)? onVideoDurationFetched;
 
-  const StoryVideo({required this.videoURL, this.onLoaded, Key? key})
-      : super(key: key);
+  const StoryVideo({
+    super.key,
+    required this.videoURL,
+    required this.onLoaded,
+    this.onVideoDurationFetched,
+  });
 
   @override
   _StoryVideoState createState() => _StoryVideoState();
@@ -16,6 +21,8 @@ class StoryVideo extends StatefulWidget {
 
 class _StoryVideoState extends State<StoryVideo> {
   late StoryVideoProvider _storyVideoPlayerController;
+  bool isLoadedCalled = false;
+  bool isPlaying = false;
 
   @override
   void initState() {
@@ -35,9 +42,16 @@ class _StoryVideoState extends State<StoryVideo> {
                 'Bir hata oluştu: ${storyProvider.controller.value.errorDescription}'),
           );
         }
-
         if (storyProvider.controller.value.isInitialized) {
-          widget.onLoaded?.call();
+          if (!isLoadedCalled) {
+            widget.onLoaded?.call();
+            isLoadedCalled = true;
+            final duration = _storyVideoPlayerController.getVideoDuration();
+            if (duration != null) {
+              widget.onVideoDurationFetched?.call(duration);
+            }
+          }
+          isPlaying = true;
           return Center(
             child: AspectRatio(
               aspectRatio: storyProvider.controller.value.aspectRatio,
@@ -45,7 +59,9 @@ class _StoryVideoState extends State<StoryVideo> {
             ),
           );
         }
-        return const CircularProgressIndicator();
+        return isPlaying
+            ? SizedBox.shrink()
+            : const CircularProgressIndicator();
       },
     );
   }

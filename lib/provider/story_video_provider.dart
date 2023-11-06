@@ -32,6 +32,20 @@ class StoryVideoProvider with ChangeNotifier {
     }
   }
 
+  int? getVideoDuration() {
+    if (_isControllerInitialized) {
+      return controller.value.duration.inMilliseconds;
+    }
+    return null;
+  }
+
+  int getCurrentPosition() {
+    if (_isControllerInitialized) {
+      return controller.value.position.inMilliseconds;
+    }
+    return 0;
+  }
+
   void disposeProvider() {
     if (isControllerInitialized) {
       controller.dispose();

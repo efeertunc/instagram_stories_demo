@@ -127,6 +127,9 @@ class _UserStoryViewState extends State<UserStoryView> {
         onLoaded: () {
           _storyTimer.start();
         },
+        onVideoDurationFetched: (duration) {
+          _storyTimer.updateDuration(duration);
+        },
       );
     } else {
       storyWidget = StoryImage(
@@ -164,7 +167,7 @@ class _UserStoryViewState extends State<UserStoryView> {
   void _onTapRight() {
     if (!mounted) return;
 
-    _storyTimer.reset();
+    _storyTimer.resetWithoutCallback();
     if (_innerPageController.page == (widget.user.stories?.length ?? 1) - 1) {
       _moveToNextUser();
     } else {
@@ -175,7 +178,7 @@ class _UserStoryViewState extends State<UserStoryView> {
   void _onTapLeft() {
     if (!mounted) return;
 
-    _storyTimer.reset();
+    _storyTimer.resetWithoutCallback();
     if (_innerPageController.page == 0) {
       _moveToPreviousUser();
     } else {
@@ -240,6 +243,10 @@ class _UserStoryViewState extends State<UserStoryView> {
 
   void _handleLongPressStart() {
     if (_isCurrentStoryVideo()) {
+      final videoDuration =
+          Provider.of<StoryVideoProvider>(context, listen: false)
+              .getCurrentPosition();
+      _storyTimer.updateElapsedTime(videoDuration);
       Provider.of<StoryVideoProvider>(context, listen: false).pause();
     }
     _storyTimer.pause();
