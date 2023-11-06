@@ -7,7 +7,7 @@ class StoryVideoProvider with ChangeNotifier {
 
   bool get isControllerInitialized => _isControllerInitialized;
 
-  void initialize(String videoURL) {
+  Future<void> initialize(String videoURL) async {
     controller = VideoPlayerController.networkUrl(Uri.parse(videoURL))
       ..initialize().then((_) {
         _isControllerInitialized = true;

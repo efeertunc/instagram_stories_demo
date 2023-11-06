@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:instagram_stories_demo/model/Story.dart';
 import 'package:instagram_stories_demo/provider/story_video_provider.dart';
 import 'package:instagram_stories_demo/widget/story_image.dart';
-import 'package:instagram_stories_demo/widget/video_player.dart';
+import 'package:instagram_stories_demo/widget/story_timer.dart';
+import 'package:instagram_stories_demo/widget/story_video.dart';
 import 'package:provider/provider.dart';
 
 import '../provider/cube_page_controller_provider.dart';
@@ -21,10 +22,15 @@ class UserStoryView extends StatefulWidget {
 
 class _UserStoryViewState extends State<UserStoryView> {
   late final PageController _innerPageController;
+  late final StoryTimer _storyTimer;
 
   @override
   void initState() {
     super.initState();
+    _storyTimer = StoryTimer(
+      onStoryEnd: _onTapRight,
+    );
+
     _initializeController();
     _configureStoryListener();
   }
@@ -47,7 +53,56 @@ class _UserStoryViewState extends State<UserStoryView> {
           children: [
             _buildPageView(),
             _buildUserNameText(),
+            _buildProgressBar(),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildProgressBar() {
+    return Positioned(
+      top: 30.0,
+      left: 10.0,
+      right: 10.0,
+      child: Row(
+        children: List.generate(
+          widget.user.stories?.length ?? 0,
+          (index) => _individualProgressBar(index),
+        ).toList(),
+      ),
+    );
+  }
+
+  Expanded _individualProgressBar(int index) {
+    return Expanded(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 2.0),
+        child: ValueListenableBuilder<double>(
+          valueListenable: _storyTimer.progressNotifier,
+          builder: (context, progress, child) {
+            final currentPage = _innerPageController.page;
+            if (currentPage == null) return SizedBox.shrink();
+            if (index == currentPage.toInt()) {
+              return LinearProgressIndicator(
+                value: progress,
+                backgroundColor: Colors.grey.withOpacity(0.5),
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+              );
+            } else if (index < currentPage.toInt()) {
+              return LinearProgressIndicator(
+                value: 1,
+                backgroundColor: Colors.grey.withOpacity(0.5),
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+              );
+            } else {
+              return LinearProgressIndicator(
+                value: 0,
+                backgroundColor: Colors.grey.withOpacity(0.5),
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+              );
+            }
+          },
         ),
       ),
     );
@@ -67,21 +122,24 @@ class _UserStoryViewState extends State<UserStoryView> {
 
     Widget storyWidget;
     if (storyUrl != null && storyUrl.endsWith('.mp4')) {
-      storyWidget = StoryVideo(videoURL: storyUrl);
+      storyWidget = StoryVideo(
+        videoURL: storyUrl,
+        onLoaded: () {
+          _storyTimer.start();
+        },
+      );
     } else {
-      storyWidget = StoryImage(imageUrl: storyUrl);
+      storyWidget = StoryImage(
+        imageUrl: storyUrl,
+        onLoaded: () {
+          _storyTimer.start();
+        },
+      );
     }
-
     return Stack(
       children: [
         Center(
           child: storyWidget,
-        ),
-        Center(
-          child: Text(
-            'index $index',
-            style: const TextStyle(color: Colors.white, fontSize: 50),
-          ),
         ),
       ],
     );
@@ -104,6 +162,9 @@ class _UserStoryViewState extends State<UserStoryView> {
   }
 
   void _onTapRight() {
+    if (!mounted) return;
+
+    _storyTimer.reset();
     if (_innerPageController.page == (widget.user.stories?.length ?? 1) - 1) {
       _moveToNextUser();
     } else {
@@ -112,6 +173,9 @@ class _UserStoryViewState extends State<UserStoryView> {
   }
 
   void _onTapLeft() {
+    if (!mounted) return;
+
+    _storyTimer.reset();
     if (_innerPageController.page == 0) {
       _moveToPreviousUser();
     } else {
@@ -165,6 +229,7 @@ class _UserStoryViewState extends State<UserStoryView> {
   @override
   void dispose() {
     _disposeController();
+    _storyTimer.dispose();
     super.dispose();
   }
 
@@ -177,12 +242,14 @@ class _UserStoryViewState extends State<UserStoryView> {
     if (_isCurrentStoryVideo()) {
       Provider.of<StoryVideoProvider>(context, listen: false).pause();
     }
+    _storyTimer.pause();
   }
 
   void _handleLongPressEnd(LongPressEndDetails details) {
     if (_isCurrentStoryVideo()) {
       Provider.of<StoryVideoProvider>(context, listen: false).resume();
     }
+    _storyTimer.resume();
   }
 
   bool _isCurrentStoryVideo() {

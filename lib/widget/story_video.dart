@@ -5,8 +5,10 @@ import 'package:video_player/video_player.dart';
 
 class StoryVideo extends StatefulWidget {
   final String videoURL;
+  final VoidCallback? onLoaded;
 
-  const StoryVideo({required this.videoURL, Key? key}) : super(key: key);
+  const StoryVideo({required this.videoURL, this.onLoaded, Key? key})
+      : super(key: key);
 
   @override
   _StoryVideoState createState() => _StoryVideoState();
@@ -35,6 +37,7 @@ class _StoryVideoState extends State<StoryVideo> {
         }
 
         if (storyProvider.controller.value.isInitialized) {
+          widget.onLoaded?.call();
           return Center(
             child: AspectRatio(
               aspectRatio: storyProvider.controller.value.aspectRatio,
