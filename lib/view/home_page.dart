@@ -39,12 +39,9 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildBody() {
-    return SizedBox(
-      height: 50,
-      child: BlocConsumer<HomePageCubit, HomePageState>(
-        listener: _stateListener,
-        builder: _stateBuilder,
-      ),
+    return BlocConsumer<HomePageCubit, HomePageState>(
+      listener: _stateListener,
+      builder: _stateBuilder,
     );
   }
 

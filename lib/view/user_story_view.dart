@@ -148,10 +148,14 @@ class _UserStoryViewState extends State<UserStoryView> {
     );
   }
 
-  Text _buildUserNameText() {
-    return Text(
-      widget.user.username ?? '',
-      style: const TextStyle(color: Colors.white, fontSize: 50),
+  Row _buildUserNameText() {
+    return Row(
+      children: [
+        Text(
+          widget.user.username ?? '',
+          style: const TextStyle(color: Colors.white, fontSize: 50),
+        ),
+      ],
     );
   }
 
