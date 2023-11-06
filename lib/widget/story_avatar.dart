@@ -5,7 +5,7 @@ import '../model/Story.dart';
 class StoryAvatar extends StatelessWidget {
   final Story? user;
 
-  StoryAvatar({required this.user, Key? key}) : super(key: key);
+  const StoryAvatar({required this.user, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

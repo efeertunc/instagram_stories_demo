@@ -49,10 +49,11 @@ class _UserStoryViewState extends State<UserStoryView> {
         onLongPress: _handleLongPressStart,
         onLongPressEnd: _handleLongPressEnd,
         onTapUp: _handleTapUp,
+        onVerticalDragEnd: _handleVerticalDrag,
         child: Stack(
           children: [
             _buildPageView(),
-            _buildUserNameText(),
+            _buildHeaderStory(),
             _buildProgressBar(),
           ],
         ),
@@ -63,8 +64,8 @@ class _UserStoryViewState extends State<UserStoryView> {
   Widget _buildProgressBar() {
     return Positioned(
       top: 30.0,
-      left: 10.0,
-      right: 10.0,
+      left: 0,
+      right: 0,
       child: Row(
         children: List.generate(
           widget.user.stories?.length ?? 0,
@@ -77,31 +78,25 @@ class _UserStoryViewState extends State<UserStoryView> {
   Expanded _individualProgressBar(int index) {
     return Expanded(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 2.0),
+        padding: const EdgeInsets.fromLTRB(2, 40, 2, 0),
         child: ValueListenableBuilder<double>(
           valueListenable: _storyTimer.progressNotifier,
           builder: (context, progress, child) {
             final currentPage = _innerPageController.page;
             if (currentPage == null) return SizedBox.shrink();
-            if (index == currentPage.toInt()) {
-              return LinearProgressIndicator(
-                value: progress,
+            return SizedBox(
+              height:
+                  2.0, // Burası progress barın kalınlığını belirler. İstediğiniz değeri buraya yazabilirsiniz.
+              child: LinearProgressIndicator(
+                value: index == currentPage.toInt()
+                    ? progress
+                    : index < currentPage.toInt()
+                        ? 1
+                        : 0,
                 backgroundColor: Colors.grey.withOpacity(0.5),
                 valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-              );
-            } else if (index < currentPage.toInt()) {
-              return LinearProgressIndicator(
-                value: 1,
-                backgroundColor: Colors.grey.withOpacity(0.5),
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-              );
-            } else {
-              return LinearProgressIndicator(
-                value: 0,
-                backgroundColor: Colors.grey.withOpacity(0.5),
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-              );
-            }
+              ),
+            );
           },
         ),
       ),
@@ -148,14 +143,35 @@ class _UserStoryViewState extends State<UserStoryView> {
     );
   }
 
-  Row _buildUserNameText() {
-    return Row(
-      children: [
-        Text(
-          widget.user.username ?? '',
-          style: const TextStyle(color: Colors.white, fontSize: 50),
+  Padding _buildHeaderStory() {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(8.0, 80, 0, 0),
+      child: SizedBox(
+        height: 50,
+        child: Row(
+          children: [
+            Padding(
+                padding: EdgeInsets.fromLTRB(8, 8, 12, 8),
+                child: ClipOval(
+                    child: Image.network(widget.user.profileUrl ?? ""))),
+            Text(
+              widget.user.username ?? '',
+              style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold),
+            ),
+            Spacer(),
+            IconButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              icon: Icon(Icons.close),
+              color: Colors.white,
+            )
+          ],
         ),
-      ],
+      ),
     );
   }
 
@@ -165,6 +181,13 @@ class _UserStoryViewState extends State<UserStoryView> {
       _onTapRight();
     } else {
       _onTapLeft();
+    }
+  }
+
+  void _handleVerticalDrag(DragEndDetails details) {
+    if (details.velocity.pixelsPerSecond.dy > 500) {
+      // Bu değer değiştirilebilir.
+      Navigator.of(context).pop(); // Sayfayı kapatmak için.
     }
   }
 
