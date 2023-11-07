@@ -11,12 +11,12 @@ class CubePageControllerProvider with ChangeNotifier {
 
   void nextPage() {
     controller?.nextPage(
-        duration: Duration(milliseconds: 500), curve: Curves.ease);
+        duration: const Duration(milliseconds: 500), curve: Curves.ease);
   }
 
   void previousPage() {
     controller?.previousPage(
-        duration: Duration(milliseconds: 500), curve: Curves.ease);
+        duration: const Duration(milliseconds: 500), curve: Curves.ease);
   }
 
   void disposeProvider() {

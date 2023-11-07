@@ -29,7 +29,7 @@ class StoryTimer {
     final startTime =
         DateTime.now().subtract(Duration(milliseconds: _elapsedTime));
 
-    timer = Timer.periodic(Duration(milliseconds: 10), (timer) {
+    timer = Timer.periodic(const Duration(milliseconds: 10), (timer) {
       final elapsed = DateTime.now().difference(startTime).inMilliseconds;
       final progress = elapsed / storyDuration;
       progressNotifier.value = progress;

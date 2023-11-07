@@ -60,7 +60,7 @@ class _StoryVideoState extends State<StoryVideo> {
           );
         }
         return isPlaying
-            ? SizedBox.shrink()
+            ? const SizedBox.shrink()
             : const CircularProgressIndicator();
       },
     );

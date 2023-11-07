@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:instagram_stories_demo/constant/color_config.dart';
+import 'package:instagram_stories_demo/constant/size_config.dart';
 
 import '../model/Story.dart';
 
@@ -9,34 +11,29 @@ class StoryAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 0,
-      child: Column(
-        children: [
-          _buildAvatar(user?.profileUrl),
-          const SizedBox(
-            height: 4,
-          ),
-          _buildUsername(user?.username),
-        ],
-      ),
+    return Column(
+      children: [
+        _buildAvatar(user?.profileUrl),
+        _buildUsername(user?.username),
+      ],
     );
   }
 
   Widget _buildAvatar(String? imageUrl) {
     return Container(
-      width: 85,
-      height: 85,
+      width: SizeConfig.instance.widthStoryAvatar,
+      height: SizeConfig.instance.heightStoryAvatar,
+      margin: SizeConfig.instance.marginStoryAvatar,
       decoration: _outerGradientDecoration(),
       child: Padding(
-        padding: const EdgeInsets.all(3),
+        padding: SizeConfig.instance.paddingStoryAvatarImageCircle,
         child: Container(
           decoration: const BoxDecoration(
             shape: BoxShape.circle,
             color: Colors.white,
           ),
           child: Padding(
-            padding: const EdgeInsets.all(4),
+            padding: SizeConfig.instance.paddingStoryAvatarImage,
             child: _imageContainer(imageUrl),
           ),
         ),
@@ -45,16 +42,10 @@ class StoryAvatar extends StatelessWidget {
   }
 
   BoxDecoration _outerGradientDecoration() {
-    return const BoxDecoration(
+    return BoxDecoration(
       shape: BoxShape.circle,
       gradient: LinearGradient(
-        colors: [
-          Color.fromRGBO(243, 18, 119, 1.0),
-          Color.fromRGBO(129, 52, 175, 1.0),
-          Color.fromRGBO(236, 28, 117, 1.0),
-          Color.fromRGBO(245, 133, 41, 1.0),
-          Color.fromRGBO(254, 218, 119, 1.0),
-        ],
+        colors: ColorConfig.instance.storyAvatarCircle,
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
       ),
@@ -65,7 +56,8 @@ class StoryAvatar extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        border: Border.all(color: Colors.grey, width: 1),
+        border: Border.all(
+            color: ColorConfig.instance.storyAvatarUsername, width: 1),
       ),
       child: ClipOval(
         child: Image.network(

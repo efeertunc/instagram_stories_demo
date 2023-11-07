@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:instagram_stories_demo/constant/color_config.dart';
+import 'package:instagram_stories_demo/constant/size_config.dart';
 import 'package:instagram_stories_demo/model/Story.dart';
 import 'package:instagram_stories_demo/provider/story_video_provider.dart';
 import 'package:instagram_stories_demo/widget/story_image.dart';
 import 'package:instagram_stories_demo/widget/story_timer.dart';
 import 'package:instagram_stories_demo/widget/story_video.dart';
 import 'package:provider/provider.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
 
 import '../provider/cube_page_controller_provider.dart';
 
@@ -44,7 +47,7 @@ class _UserStoryViewState extends State<UserStoryView> {
 
   Widget _buildContainer() {
     return Container(
-      color: Colors.black,
+      color: ColorConfig.instance.userStoryViewBackgraundColor,
       child: GestureDetector(
         onLongPress: _handleLongPressStart,
         onLongPressEnd: _handleLongPressEnd,
@@ -63,7 +66,7 @@ class _UserStoryViewState extends State<UserStoryView> {
 
   Widget _buildProgressBar() {
     return Positioned(
-      top: 30.0,
+      top: 3.h,
       left: 0,
       right: 0,
       child: Row(
@@ -78,23 +81,24 @@ class _UserStoryViewState extends State<UserStoryView> {
   Expanded _individualProgressBar(int index) {
     return Expanded(
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(2, 40, 2, 0),
+        padding: SizeConfig.instance.paddingUserStoryViewProgressBar,
         child: ValueListenableBuilder<double>(
           valueListenable: _storyTimer.progressNotifier,
           builder: (context, progress, child) {
             final currentPage = _innerPageController.page;
-            if (currentPage == null) return SizedBox.shrink();
+            if (currentPage == null) return const SizedBox.shrink();
             return SizedBox(
-              height:
-                  2.0, // Burası progress barın kalınlığını belirler. İstediğiniz değeri buraya yazabilirsiniz.
+              height: 2.0,
               child: LinearProgressIndicator(
                 value: index == currentPage.toInt()
                     ? progress
                     : index < currentPage.toInt()
                         ? 1
                         : 0,
-                backgroundColor: Colors.grey.withOpacity(0.5),
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                backgroundColor: ColorConfig
+                    .instance.userStoryViewProgressBarBackgroundColor,
+                valueColor:
+                    ColorConfig.instance.userStoryViewProgressBarValueColor,
               ),
             );
           },
@@ -145,29 +149,29 @@ class _UserStoryViewState extends State<UserStoryView> {
 
   Padding _buildHeaderStory() {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(8.0, 80, 0, 0),
+      padding: SizeConfig.instance.paddingUserStoryViewHeader,
       child: SizedBox(
         height: 50,
         child: Row(
           children: [
             Padding(
-                padding: EdgeInsets.fromLTRB(8, 8, 12, 8),
+                padding: SizeConfig.instance.paddingUserStoryViewHeaderImage,
                 child: ClipOval(
                     child: Image.network(widget.user.profileUrl ?? ""))),
             Text(
               widget.user.username ?? '',
-              style: const TextStyle(
-                  color: Colors.white,
+              style: TextStyle(
+                  color: ColorConfig.instance.userStoryViewHeaderUsernameColor,
                   fontSize: 12,
                   fontWeight: FontWeight.bold),
             ),
-            Spacer(),
+            const Spacer(),
             IconButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              icon: Icon(Icons.close),
-              color: Colors.white,
+              icon: const Icon(Icons.close),
+              color: ColorConfig.instance.userStoryViewHeaderIconColor,
             )
           ],
         ),
@@ -186,8 +190,7 @@ class _UserStoryViewState extends State<UserStoryView> {
 
   void _handleVerticalDrag(DragEndDetails details) {
     if (details.velocity.pixelsPerSecond.dy > 500) {
-      // Bu değer değiştirilebilir.
-      Navigator.of(context).pop(); // Sayfayı kapatmak için.
+      Navigator.of(context).pop();
     }
   }
 

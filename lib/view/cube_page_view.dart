@@ -1,5 +1,6 @@
 import 'package:cube_transition_plus/cube_transition_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:instagram_stories_demo/constant/color_config.dart';
 import 'package:instagram_stories_demo/model/Story.dart';
 import 'package:instagram_stories_demo/provider/cube_page_controller_provider.dart';
 import 'package:instagram_stories_demo/view/user_story_view.dart';
@@ -30,7 +31,7 @@ class _PageViewCubeState extends State<PageViewCube> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: ColorConfig.instance.cubePageViewBackgroundColor,
       body: Center(
         child: _buildCubePageView(context),
       ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:instagram_stories_demo/cubit/home_page_cubit.dart';
 import 'package:instagram_stories_demo/widget/home_card.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
 
 import '../model/Story.dart';
 import '../state/home_page_state.dart';
@@ -22,9 +23,13 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: _buildAppBar(),
-      body: _buildBody(),
+    return ResponsiveSizer(
+      builder: (buildContext, orientation, screenType) {
+        return Scaffold(
+          appBar: _buildAppBar(),
+          body: _buildBody(),
+        );
+      },
     );
   }
 
