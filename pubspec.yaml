@@ -34,6 +34,9 @@ dependencies:
   #Material
   cupertino_icons: ^1.0.2
 
+  # Env
+  flutter_dotenv: ^5.1.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -44,4 +47,7 @@ dev_dependencies:
 flutter:
 
   uses-material-design: true
+
+  assets:
+    - .env
 

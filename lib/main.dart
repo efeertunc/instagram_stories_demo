@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:instagram_stories_demo/cubit/home_page_cubit.dart';
 import 'package:instagram_stories_demo/provider/cube_page_controller_provider.dart';
 import 'package:instagram_stories_demo/provider/story_video_provider.dart';
@@ -11,6 +12,7 @@ import 'firebase_options.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: ".env");
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );

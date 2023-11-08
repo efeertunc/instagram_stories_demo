@@ -3,6 +3,7 @@
 import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
 import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, kIsWeb, TargetPlatform;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 /// Default [FirebaseOptions] for use with your Firebase apps.
 ///
@@ -43,8 +44,8 @@ class DefaultFirebaseOptions {
     }
   }
 
-  static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyBs0Xw1gI-gEv7vdn6b5wf0oO7Dz_72T0I',
+  static FirebaseOptions web = FirebaseOptions(
+    apiKey: dotenv.env['API_KEY'] ?? '',
     appId: '1:162214450817:web:507c029e19831f4b03df80',
     messagingSenderId: '162214450817',
     projectId: 'instagram-stories-3189f',
@@ -53,16 +54,16 @@ class DefaultFirebaseOptions {
     measurementId: 'G-6Y2PXZTFXT',
   );
 
-  static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyCk6dR7gRsddDwhdPzUC6WiYQYvxpTNX_E',
+  static FirebaseOptions android = FirebaseOptions(
+    apiKey: dotenv.env['API_KEY'] ?? '',
     appId: '1:162214450817:android:13d1c580d48d0eb603df80',
     messagingSenderId: '162214450817',
     projectId: 'instagram-stories-3189f',
     storageBucket: 'instagram-stories-3189f.appspot.com',
   );
 
-  static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyBokZAWGFM8cWg8kJMiFaEmnk0iZo03VQc',
+  static FirebaseOptions ios = FirebaseOptions(
+    apiKey: dotenv.env['API_KEY'] ?? '',
     appId: '1:162214450817:ios:331d5602861f1de703df80',
     messagingSenderId: '162214450817',
     projectId: 'instagram-stories-3189f',
@@ -70,8 +71,8 @@ class DefaultFirebaseOptions {
     iosBundleId: 'com.efertunc.instagramStoriesDemo',
   );
 
-  static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyBokZAWGFM8cWg8kJMiFaEmnk0iZo03VQc',
+  static FirebaseOptions macos = FirebaseOptions(
+    apiKey: dotenv.env['API_KEY'] ?? '',
     appId: '1:162214450817:ios:e649994b43ee85b003df80',
     messagingSenderId: '162214450817',
     projectId: 'instagram-stories-3189f',
